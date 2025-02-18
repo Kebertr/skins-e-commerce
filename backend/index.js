@@ -32,7 +32,28 @@ app.get('/api/users', (req, res) => {
   });
 });
 
+app.get('/api/skins', (req, res) => {
+  connection.query('SELECT * FROM skins', (err, results) => {
+    if (err) {
+      console.error('Error executing query: ' + err.stack);
+      res.status(500).send('Error fetching users');
+      return;
+    }
+    res.json(results);
+  });
+});
 
+app.post('/api/createskin', (req, res) => {
+  const { id, name, category, value, product_id, image_location } = req.body;
+  connection.query('INSERT INTO skins (id, name, category, value, product_id, image_location) VALUES (?, ?, ?, ?, ?, ?)', [id, name, category, value, product_id, image_location], (err, result) => {
+    if (err) {
+      console.error('Error executing query: ' + err.stack);
+      res.status(400).send('Error creating skin');
+      return;
+    }
+    res.status(201).send('Create skin');
+  });
+});
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => {

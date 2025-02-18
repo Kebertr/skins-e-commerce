@@ -37,7 +37,7 @@ function ProductCard({ product }) {
   return ( 
     <div className="product-card"> 
     {/*Displays the given picture to the product, and placeholder picture if product doesnt have a picture*/}
-      <img src={product.picture || 'default-placeholder.jpg'} alt={product.name} className="product-image" />
+      <img src={'/public/bayonet_gamma_doppler.png'}/>
       <h4>{product.name}</h4>
       <p>{product.price}</p>
     </div>
@@ -98,15 +98,16 @@ const PRODUCTS = [
 
 // Main application component
 export default function App() {
+  let products;
   const [count, setCount] = useState(0)
 
   const fetchUsers = async () =>{
-      const response = await axios.get('http://localhost:9000/api/users');
+      const response = await axios.get('http://localhost:9000/api/skins');
       console.log(response.data);
   }
 
   useEffect(() =>{
-    fetchUsers();
+    products = fetchUsers();
   },
   []);
   return <FilterableProductGrid products={PRODUCTS} />;
