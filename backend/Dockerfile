@@ -1,8 +1,8 @@
-From node:19-alpine
+FROM node:19-alpine
 WORKDIR /backend
 COPY . .
-run chown -R node:node .
+RUN chown -R node:node .
 USER node 
-run npm install
+RUN npm install
 EXPOSE 5000
 CMD ["node", "index.js"]
