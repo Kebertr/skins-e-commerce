@@ -24,6 +24,30 @@
   color: white;
 }
 
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Creates 4 equal columns */
+  gap: 2%; /* Adds spacing between items */
+  padding: 1.5%;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 5px 5px 15px rgba(189, 43, 189, 0.89);
+}
+
+.product-image {
+  width: 100%;
+  height: auto;
+  max-height: 150px; /* Ensures images are uniform */
+  object-fit: cover;
+}
+
+
 .App-link {
   color: #61dafb;
 }

@@ -6,7 +6,9 @@
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",
+    "expo": "^52.0.28",
     "react": "^19.0.0",
+    "react-native": "^0.77.0",
     "react-dom": "^19.0.0",
     "react-scripts": "5.0.1"
   },
