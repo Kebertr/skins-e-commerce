@@ -1,8 +1,7 @@
-From node:19-alpine
+FROM node:18-alpine
 WORKDIR /web
-COPY . . 
-run chown -R node:node .
-USER node
-run npm install
-EXPOSE 3000
-CMD ["npm", "start"]
+COPY package.json .
+RUN npm install
+COPY . .
+EXPOSE 80
+CMD [ "npm", "run", "dev" ]
