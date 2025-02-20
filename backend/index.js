@@ -43,8 +43,8 @@ app.get('/api/skins', (req, res) => {
 });
 
 app.post('/api/createskin', (req, res) => {
-  const { id, name, category, value, product_id, image_location } = req.body;
-  connection.query('INSERT INTO skins (id, name, category, value, product_id, image_location) VALUES (?, ?, ?, ?, ?, ?)', [id, name, category, value, product_id, image_location], (err, result) => {
+  const { name, category, value, image_location } = req.body;
+  connection.query('INSERT INTO skins (name, category, value, image_location) VALUES (?, ?, ?, ?)', [name, category, value, image_location], (err, result) => {
     if (err) {
       res.status(400).send('Error creating skin');
       return;
