@@ -30,6 +30,12 @@
   gap: 2%; /* Adds spacing between items */
   padding: 1.5%;
 }
+body, main{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Creates 4 equal columns */
+  gap: 2%; /* Adds spacing between items */
+  padding: 1.5%;
+}
 
 .product-card {
   border: 1px solid #ddd;

@@ -23,10 +23,11 @@ function App() {
   }, []);
 
     return(
+
       data.map((skin, i) => (
         <div className='product-card'> 
           <img src={skin.image_location}/>
-          <h4 key = '{skin.id+i}'>{skin.id}</h4>
+          <h4 key = '{skin.name+i}'>{skin.name}</h4>
           <p key = '{skin.value + i}'>{skin.value}</p>
         </div>
       ))
