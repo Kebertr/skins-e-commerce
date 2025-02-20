@@ -11,8 +11,7 @@ services:
   database:
     build: 
       context: database/
-    volumes:
-      - mysql-data:/var/lib/mysql
+
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mydatabase
@@ -20,6 +19,7 @@ services:
       MYSQL_PASSWORD: password
     ports:
       - "3307:3306"
-
+    volumes:
+      - mysql-data:/var/lib/mysql
 volumes:
   mysql-data:
