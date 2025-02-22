@@ -1,37 +1,18 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home"
+import Register from "./pages/Register"
+import LoggIn from "./pages/LoggIn";
 
 function App() {
-
-  const [data, backdata] = useState([]);
-
-  const fetchSkins = async () =>{
-    try{
-      const response = await axios.get('http://localhost:9000/api/skins');
-      backdata(response.data);
-      
-    }
-    catch(error){
-      console.log('Oops that should not happen');
-    }
-      
-  };
-
-  useEffect(() =>{
-    fetchSkins();
-  }, []);
-
-    return(
-
-      data.map((skin, i) => (
-        <div className='product-card'> 
-          <img src={skin.image_location}/>
-          <h4 key = '{skin.name+i}'>{skin.name}</h4>
-          <p key = '{skin.value + i}'>{skin.value}</p>
-        </div>
-      ))
-    )
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/Register" element={<Register />} />
+        <Route path="/LoggIn" element={<LoggIn />} />
+      </Routes>
+    </Router>
+  )
 }
 
 export default App;
