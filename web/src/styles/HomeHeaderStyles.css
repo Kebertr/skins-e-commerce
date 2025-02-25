@@ -1,0 +1,37 @@
+.header-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    height: 50px;
+    width: 100px;
+    display: flex;
+    align-items: center; /* Centers text vertically */
+    justify-content: center; /* Centers text horizontally */
+}
+
+.buttons{
+    margin-left: 30vw;
+    display: flex;
+}
+
+header {
+    display: flex;
+    align-items: center; /* Centers all children (button & title) */
+    width: 100vw;
+    height: 60px;
+    background-color: rgba(189, 43, 189, 0.89);
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.h2 {
+    margin-left: 40vw;
+    display: flex;
+    align-items: center; /* Centers text vertically */
+    justify-content: center; /* Centers text horizontally */
+}

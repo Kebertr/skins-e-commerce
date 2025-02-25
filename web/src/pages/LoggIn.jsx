@@ -2,6 +2,7 @@ import axios from 'axios';
 import '../styles/LoggInStyles.css';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import BackHeader from './subElements/BackHeader';
 
 //The whole logg in page
 function LoggIn() {
@@ -20,14 +21,20 @@ function LoggIn() {
     }
 
     return(
-        <div className="login-container">
-            <h2>Login</h2>
-            <form action="#" method="POST" onSubmit={handleSubmit}>
-                <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
-                <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-                <button type="submit" >Log In</button>
-            </form>
-        </div>
+        <>
+            <BackHeader/>
+
+            <div className='body'>
+                <div className="login-container">
+                    <h2>Login</h2>
+                    <form action="#" method="POST" onSubmit={handleSubmit}>
+                        <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
+                        <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+                        <button type="submit" >Log In</button>
+                    </form>
+                </div>
+            </div>
+        </>
     );
 }
 

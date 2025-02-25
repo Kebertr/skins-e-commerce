@@ -2,6 +2,7 @@ import axios from 'axios';
 import '../styles/LoggInStyles.css';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import BackHeader from './subElements/BackHeader';
 
 //The whole logg in page
 function Register() {
@@ -30,16 +31,22 @@ function Register() {
     }, [formData]);
 
     return(
-        <div className="login-container">
-            <h2>Register</h2>
-            <form action="#" method="POST" onSubmit={handleSubmit}>
-                <input type="text" name="username" placeholder="Username" required />
-                <input id="p1" type="password" name="password" placeholder="Password" onChange={handleChange} required />
-                <input id="p2" type="password" name="password" placeholder="Reenter Password" onChange={handleChange} required />
-                <p>{passwordText}</p>
-                <button type="submit">Log In</button>
-            </form>
-        </div>
+        <>
+            <BackHeader/>
+
+            <div className='body'>
+                <div className="login-container">
+                    <h2>Register</h2>
+                    <form action="#" method="POST" onSubmit={handleSubmit}>
+                        <input type="text" name="username" placeholder="Username" required />
+                        <input id="p1" type="password" name="password" placeholder="Password" onChange={handleChange} required />
+                        <input id="p2" type="password" name="password" placeholder="Reenter Password" onChange={handleChange} required />
+                        <p>{passwordText}</p>
+                        <button type="submit">Log In</button>
+                    </form>
+                </div>
+            </div>
+        </>
     );
 }
 
