@@ -8,7 +8,7 @@ function Home() {
 
   const fetchSkins = async () => {
     try {
-      const response = await axios.get("http://localhost:9000/api/skins");
+      const response = await axios.get("http://localhost:3000/skins");
       backdata(response.data);
     } catch (error) {
       console.log("Oops that should not happen");
