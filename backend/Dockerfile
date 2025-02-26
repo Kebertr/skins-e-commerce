@@ -3,6 +3,6 @@ WORKDIR /backend
 COPY . .
 RUN chown -R node:node .
 USER node 
-RUN npm install
-EXPOSE 5000
-CMD ["node", "index.js"]
+RUN npm install bcrypt
+EXPOSE 3000
+CMD ["node", "server.js"]
