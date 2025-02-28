@@ -44,3 +44,11 @@ CREATE TABLE IF NOT EXISTS orders (
     FOREIGN KEY (userId) REFERENCES users(id)
 );
 
+CREATE TABLE IF NOT EXISTS user_sessions (
+    session_id VARCHAR(255) PRIMARY KEY,    
+    username VARCHAR(50) NOT NULL,
+    userId INT NOT NULL,
+    expiration_time TIMESTAMP NOT NULL,
+    FOREIGN KEY (userId) REFERENCES users(id)
+);
+

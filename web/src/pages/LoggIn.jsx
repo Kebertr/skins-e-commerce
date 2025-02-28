@@ -24,12 +24,22 @@ function LoggIn() {
     axios
       .post("http://localhost:3000/loginUser", user)
       .then((response) => {
-        console.log("Data sent successfully:", response.data);
-        console.log(response.data);
+        axios
+          .get("http://localhost:3000/sessionId", { params: { username: user.username } })
+          .then((response) => {
+            //Create cookie with seasion id
+            console.log(response.data);
+            document.cookie = `sessionId=${response.data}; path=/;`;
+          })
+          .catch((error) => {
+            console.error("could not get session id");
+          });
+
         //Navigate to home page
-        //navigate("/");
+        navigate("/");
       })
       .catch((error) => {
+        alert("Wrong username or password!");
         console.error("Error sending data:", error);
         setPasswordText("🚨 Username already exist");
       });
