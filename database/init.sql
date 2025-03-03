@@ -4,7 +4,8 @@ USE mydatabase;
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    user_password TEXT NOT NULL
+    user_password TEXT NOT NULL,
+    cash INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS skins (
@@ -49,6 +50,7 @@ CREATE TABLE IF NOT EXISTS user_sessions (
     username VARCHAR(50) NOT NULL,
     userId INT NOT NULL,
     expiration_time TIMESTAMP NOT NULL,
+    cash INT NOT NULL,
     FOREIGN KEY (userId) REFERENCES users(id)
 );
 

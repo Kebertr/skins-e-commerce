@@ -5,14 +5,14 @@ import { useState } from "react";
 const HomeHeader = () => {
   const navigate = useNavigate();
 
-  const handleRegisterClick = (event) => {
-    console.log("--> register")
+  const handleBasketClick = (event) => {
+    console.log("--> Basket")
     navigate("/Register");
   }
 
-  const handleLoggInClick = (event) => {
-    console.log("--> logg in")
-    navigate("/LoggIn");
+  const handleAccountClick = (event) => {
+    console.log("--> Account")
+    navigate("/Account");
   }
 
   return (
@@ -20,8 +20,8 @@ const HomeHeader = () => {
       <header className="header">
         <h2 className="h2">Page Title Home</h2>
         <div className="buttons">
-          <button className="header-button" onClick={handleRegisterClick}>Register</button>
-          <button className="header-button" onClick={handleLoggInClick}>Logg In</button>
+          <button className="header-button" onClick={handleBasketClick}>Basket</button>
+          <button className="header-button" onClick={handleAccountClick}>Account</button>
         </div>
       </header>
     </>
