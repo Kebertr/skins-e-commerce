@@ -90,7 +90,7 @@ app.post("/registerUser", (req, res) => {
 
       //Puts username and hashed password inte database
       connection.query(
-        "INSERT INTO users (username, user_password) VALUES (?, ?)",
+        "INSERT INTO users (username, user_password, cash) VALUES (?, ?, 0)",
         [username, hash],
         (err, result) => {
           if (err) {
@@ -165,57 +165,142 @@ function createSession(req, connection, username) {
   req.session.user = { username };
   console.log("seasion created, id:", req.session);
 
-  const sessionId = req.session.id;
-  const userId = 1;
-  //const userId = req.session.user.userId;
-  let expirationTime = new Date(req.session.cookie._expires);
-  expirationTime = new Date(expirationTime.getTime() + (60 * 60 * 1000)); // Add 1 hour
-  const formattedExpirationTime = expirationTime.toISOString().slice(0, 19).replace("T", " ");
-
   connection.query(
-    "INSERT INTO user_sessions (session_id, username, userId, expiration_time) VALUES (?, ?, ?, ?)",
-    [sessionId, username, userId, formattedExpirationTime],
-    (err, result) => {
-      if (err) {
-        console.log("could not add session to db");
+    "SELECT * FROM users WHERE username = ?",
+    [username],
+    (error, results) => {
+      if (error) {
+        res.status(400).send("Problem getting all users");
         return;
       }
-      console.log("session added");
+      console.log("result: ", results);
+
+      const cash = results[0].cash;
+      const sessionId = req.session.id;
+      const userId = results[0].id;
+      let expirationTime = new Date(req.session.cookie._expires);
+      expirationTime = new Date(expirationTime.getTime() + 60 * 60 * 1000); // Add 1 hour
+      const formattedExpirationTime = expirationTime.toISOString().slice(0, 19).replace("T", " ");
+
+      connection.query(
+        "INSERT INTO user_sessions (session_id, username, userId, expiration_time, cash) VALUES (?, ?, ?, ?, ?)",
+        [sessionId, username, userId, formattedExpirationTime, cash],
+        (err, result) => {
+          if (err) {
+            console.log("could not add session to db");
+            return;
+          }
+          console.log("session added");
+        }
+      );
     }
   );
 }
 
 //Get seasion ID
-app.get('/sessionId', (req, res) => {
+app.get("/sessionId", (req, res) => {
   const { username } = req.query;
-  connection.query('SELECT session_id, expiration_time FROM user_sessions WHERE username = ?', [username], (err, result) => {
-    if(err){
-      console.error("Error getting session id", err);
-      res.status(400).send("Error fetching sessionId for user: " + username);
-      return;
-    } else if(Date(result[0].expiration_time) > Date.now()){
-      //if sesion expired delete session
-      connection.query("DELETE FROM user_sessions WHERE username = ?", [username], (err, result) => {
-          if (err) {
-            console.log("could not delete session");
-            return;
+  connection.query(
+    "SELECT session_id, expiration_time FROM user_sessions WHERE username = ?",
+    [username],
+    (err, result) => {
+      if (err) {
+        console.error("Error getting session id", err);
+        res.status(400).send("Error fetching sessionId for user: " + username);
+        return;
+      } else if (Date(result[0].expiration_time) > Date.now()) {
+        //if sesion expired delete session
+        connection.query(
+          "DELETE FROM user_sessions WHERE username = ?",
+          [username],
+          (err, result) => {
+            if (err) {
+              console.log("could not delete session");
+              return;
+            }
+            console.log("session deleted");
           }
-          console.log("session deleted");
-        }
-      );
-      res.status(600).send("Session has expired");
-      return;
-    } else if(result[0].session_id.length == 0){
-      //if session empty
-      console.log("session id NULL")
-      res.status(400).send("No session id found for user");
-      return;
+        );
+        res.status(600).send("Session has expired");
+        return;
+      } else if (result[0].session_id.length == 0) {
+        //if session empty
+        console.log("session id NULL");
+        res.status(400).send("No session id found for user");
+        return;
+      }
+      console.log("session id returned");
+      console.log(result[0].session_id);
+      res.status(200).send(result[0].session_id);
     }
-    console.log("session id returned")
-    console.log(result[0].session_id);
-    res.status(200).send(result[0].session_id);
-  })
+  );
+});
+
+//Add cash
+app.post("/cash", (req, res) => {
+  const { username, user_password } = req.body;
+  console.log(req.body);
+  connection.query( //add cash to account
+    "UPDATE users SET cash = ? WHERE username = ?",
+    [req.body.cash, req.body.username],
+    (error, results) => {
+      if (error) {
+        res.status(400).send("Problem setting cash");
+        return;
+      }
+    }
+  );
+  connection.query( //add cash to session
+    "UPDATE user_sessions SET cash = ? WHERE username = ?",
+    [req.body.cash, req.body.username],
+    (error, results) => {
+      if (error) {
+        res.status(400).send("Problem setting cash");
+        return;
+      }
+    }
+  );
 })
+
+//Gett session
+app.get("/session", (req, res) => {
+  const ID = req.query.sessionID.trim();
+  console.log(ID);
+  //Makes query to database
+  connection.query(
+    "SELECT * FROM user_sessions WHERE session_id = ?",
+    [ID],
+    (error, results) => {
+      if (error) {
+        res.status(400).send("Problem getting all users");
+        return;
+      }
+      //Return session
+      console.log(results);
+      res.json(results);
+    }
+  );
+});
+
+//Gett user
+app.get("/user", (req, res) => {
+  const ID = req.query.username.trim();
+  console.log(ID);
+  //Makes query to database
+  connection.query(
+    "SELECT * FROM users WHERE username = ?",
+    [ID],
+    (error, results) => {
+      if (error) {
+        res.status(400).send("Problem getting all users");
+        return;
+      }
+      //Return user
+      console.log(results);
+      res.json(results);
+    }
+  );
+});
 
 //Delete seasion ID
 /*app.post('/sessionId', (req, res) => {
