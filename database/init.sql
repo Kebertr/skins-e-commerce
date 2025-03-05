@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     user_password TEXT NOT NULL,
-    cash INT NOT NULL
+    cash INT NOT NULL,
+    adminRole INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS skins (
@@ -23,6 +24,8 @@ CREATE TABLE IF NOT EXISTS Basket (
     quantity INT,
     userId INT NOT NULL,
     productId INT NOT NULL,
+    skin_value FLOAT NOT NULL,
+    stock INT NOT NULL,
     FOREIGN KEY (userId) REFERENCES users(id),
     FOREIGN KEY (productId) REFERENCES skins(id)
 );
@@ -39,8 +42,9 @@ CREATE TABLE IF NOT EXISTS reviews (
 
 CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    userid INT NOT NULL,
+    userId INT NOT NULL,
     cost INT NOT NULL,
+    skin_name TEXT NOT NULL,
     ord_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userId) REFERENCES users(id)
 );
