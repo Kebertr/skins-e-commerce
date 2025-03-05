@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import "../styles/Home.css";
 import HomeHeader from "./subElements/HomeHeader";
 import HomeHeaderLoggedIn from "./subElements/HomeHeaderLoggedIn";
@@ -50,6 +51,10 @@ function Home() {
         console.log("Oops that should not happen");
       });
   };
+  const handleProductClick = (id) => {
+    console.log("--> Go to product")
+    navigate(`/Details/${id}`);
+  }
 
   return (
     <div className="page">
@@ -58,11 +63,11 @@ function Home() {
       </div>
       <div className="product-grid">
         {data.map((skin, i) => (
-          <div key={skin.id || i} className="product-card">
-            <img src={skin.image_location} alt={skin.name} />
-            <h4>{skin.name}</h4>
-            <p>{skin.value}</p>
-          </div>
+        <div key={skin.id || i} className="product-card" >
+          <img src={skin.image_location} alt={skin.name} />
+          <button onClick={() => handleProductClick(skin.id)}>{skin.skin_name}</button>
+          <p>{skin.skin_value} Cash-Coins</p>
+        </div>
         ))}
       </div>
     </div>
