@@ -330,6 +330,23 @@ app.get("/skins", (req, res) => {
   });
 });
 
+// Get a skin with ID
+app.get('/skins/:id', (req, res) => {
+  const id = req.params.id; 
+  connection.query('SELECT * FROM skins WHERE id = ?', [id], (error, results) => {
+    if (error) {
+      console.error('Error fetching skin:', error);
+      res.status(500).send('Problem getting skin'); // server errors
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).send('Skin not found'); // no skin is found
+      return;
+    }
+    res.json(results[0]); // Return the only result
+  });
+});
+
 app.put("/changeSkinStock", (req, res) => {
   const { amount } = req.body;
   const { id } = req.query;
