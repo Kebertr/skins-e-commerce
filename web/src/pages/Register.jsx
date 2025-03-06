@@ -1,7 +1,7 @@
 import axios from "axios";
-import "../styles/LoggInStyles.css";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/LoggInStyles.css";
 import BackHeader from "./subElements/BackHeader";
 
 //The whole logg in page
@@ -32,7 +32,8 @@ function Register() {
     if (formData.p1 == formData.p2 && formData.u != "") {
       const newUser = {
         username: formData.u,
-        user_password: formData.p1
+        user_password: formData.p1,
+        adminRole: formData.admin
       };
     
     axios
@@ -81,6 +82,14 @@ function Register() {
               type="password"
               name="password"
               placeholder="Reenter Password"
+              onChange={handleChange}
+              required
+            />
+            <input
+              id="admin"
+              type="text"
+              name="admin"
+              placeholder="admin"
               onChange={handleChange}
               required
             />
