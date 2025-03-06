@@ -8,7 +8,6 @@
 }
 
 .product-card {
-  width: 35vw;
   align-items: center;
   border: 1px solid #ddd;
   height: '25%';
@@ -20,6 +19,12 @@
   box-shadow: 5px 5px 15px rgba(189, 43, 189, 0.89);
 }
 
+img {
+  float: center;
+  width:  300px;
+  height: 300px;
+  object-fit: cover;
+}
 .product-image {
   width: 100%;
   height: auto;
