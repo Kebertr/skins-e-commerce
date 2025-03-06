@@ -1,6 +1,7 @@
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/LoggInStyles.css";
-import { useState, useEffect } from "react";
 import BackHeader from "./subElements/BackHeader";
 
 //Gets session data
@@ -28,7 +29,8 @@ function getSession(callback) {
 }
 
 //The whole account page
-function Register() {
+function Account() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ p1: "" });
   const [data, setData] = useState([]);
   const [sessionData, setSessionData] = useState(null); // Store session info
@@ -95,10 +97,29 @@ function Register() {
             />
             <button onClick={handleCashChange}>Add cash-coins</button>
           </div>
+          <div>
+            <button onClick={() => Admin(navigate, sessionData)}>Admin Panel</button>
+          </div>
         </div>
       </div>
     </>
   );
 }
+function Admin(navigate, sessionData){
+  console.log(sessionData);
+  var userId = sessionData.userId;
+  axios
+    .get(`http://localhost:3000/getAdmin?id=${userId}`)
+    .then((response) => {
+      if(response.data[0].adminRole == 1){
+        navigate("/adminPage");
+      }
+    })
+    .catch((error) => {
+      console.error("Could not get session data", error);
+      callback(null); // Pass null on error
+    });
+}
 
-export default Register;
+
+export default Account;
