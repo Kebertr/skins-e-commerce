@@ -21,6 +21,7 @@ const HomeHeader = () => {
         <div className="buttons">
           <button className="header-button" onClick={handleCheckoutClick}>Checkout</button>
           <button className="header-button" onClick={handleAccountClick}>Account</button>
+          
         </div>
       </header>
     </>

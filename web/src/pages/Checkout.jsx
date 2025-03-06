@@ -29,7 +29,7 @@ function getSession(callback) {
     });
 }
 
-function Basket() {
+function Checkout() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [sessionData, setSessionData] = useState(null); // Store session info
@@ -84,9 +84,8 @@ function Basket() {
   );
 }
 function pay(totalValue, data, sessionData, navigate){
-  
+  console.log(data);
   var check = false;
-  console.log(totalValue);
   data.forEach(prop => {
     if(sessionData?.cash > totalValue && prop.quantity < prop.stock){
       console.log("Yay");
@@ -103,9 +102,8 @@ function pay(totalValue, data, sessionData, navigate){
   var userId = sessionData.userId;
   var username = sessionData.username;
   var cash = sessionData.cash-totalValue;
-  console.log(username);
   axios
-      .post("http://localhost:3000/checkout", {userId, cash, username})
+      .post("http://localhost:3000/checkout", {userId, cash, username, data})
       
       .then((response) => {
         console.log("Data sent successfully:", response.data);
@@ -118,4 +116,4 @@ function pay(totalValue, data, sessionData, navigate){
       
 }
 
-export default Basket;
+export default Checkout;

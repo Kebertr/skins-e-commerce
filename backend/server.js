@@ -392,15 +392,29 @@ app.get("/reviewProduct", (req, res) => {
   //example of url for using productId is 'http://localhost:3000/reviewProduct?productId=1' for productId=1
   const { productId } = req.query;
   connection.query(
-    "SELECT review, grade FROM reviews WHERE productId = ?",
+    "SELECT review, grade, userId FROM reviews WHERE productId = ?",
     [productId],
     (error, result) => {
       if (error) {
         res.status(400).send("Error getting reviews");
         return;
       }
-      res.status(201).send(result);
-      res.json(result);
+      console.log(result[0].userId);
+      connection.query(
+        "SELECT username FROM users WHERE id = ?",
+        [result[0].userId],
+        (err, resu) => {
+          if (err) {
+            res.status(400).send("Error getting username");
+            return;
+          }
+          for(let i = 0; i < result.length; i++){
+            result[i]["username"] = resu[0].username;
+          }
+          console.log(result)
+          res.json(result);
+        }
+      );
     }
   );
 });
@@ -457,8 +471,23 @@ app.post("/addSkin", (req, res) => {
       );
 });
 
+app.post("/deleteCart", (req, res) => {
+  const { skin } = req.body;
+  connection.query(
+    "DELETE FROM Basket WHERE userId = ? AND productId = ?",
+    [skin.userId, skin.productId],
+    (error, results) => {
+      if (error) {
+        res.status(400).send("Problem getting rid of basket");
+        return;
+      }
+      res.status(200).send("successfully deleted basket for user");
+    }
+  );
+})
+
 app.post("/checkout", (req, res) => {
-  const { userId , cash, username} = req.body;
+  const { userId , cash, username, data} = req.body;
   connection.query(
     "SELECT * FROM Basket WHERE userId = ?",
     [userId],
@@ -494,7 +523,18 @@ app.post("/checkout", (req, res) => {
       res.status(200).send("successfully deleted basket for user");
     }
   );
-  connection.query( //add cash to account
+  data.forEach(prop => {
+    connection.query( 
+      "UPDATE skins SET stock = ? WHERE id = ?",
+    [prop.stock-prop.quantity, prop.productId],
+    (error, results) => {
+      if (error) {
+        res.status(400).send("Problem setting cash");
+        return;
+      }
+    })
+  });
+  connection.query( 
     "UPDATE users SET cash = ? WHERE username = ?",
     [cash, username],
     (error, results) => {
@@ -504,7 +544,7 @@ app.post("/checkout", (req, res) => {
       }
     }
   );
-  connection.query( //add cash to session
+  connection.query( 
     "UPDATE user_sessions SET cash = ? WHERE username = ?",
     [cash, username],
     (error, results) => {

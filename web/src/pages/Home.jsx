@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
 import HomeHeader from "./subElements/HomeHeader";
 import HomeHeaderLoggedIn from "./subElements/HomeHeaderLoggedIn";
@@ -29,6 +29,7 @@ function getSession(callback) {
 }
 
 function Home() {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [sessionData, setSessionData] = useState(null); // Store session info
 

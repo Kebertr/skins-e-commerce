@@ -1,9 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
-import HomeHeader from "./subElements/HomeHeader";
-import HomeHeaderBasket from "./subElements/HomeHeaderBasket";
-
+import BackHeader from "./subElements/BackHeader";
 function getSession(callback) {
   var sessionID = document.cookie
     .split("; ")
@@ -28,6 +27,7 @@ function getSession(callback) {
 }
 
 function Basket() {
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [sessionData, setSessionData] = useState(null); // Store session info
 
@@ -45,14 +45,12 @@ function Basket() {
   }, [sessionData]); 
 
   const fetchBasket = () => {
-    console.log(sessionData.userId);
     var userId = sessionData.userId;
     var url = `http://localhost:3000/basket?id=${userId}`
     
     axios.get(url)
       .then((response) => {
         setData(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         console.log("Oops that should not happen");
@@ -60,10 +58,28 @@ function Basket() {
       
   };
 
+  const handleCheckoutClick = (event) => {
+    console.log("--> Checkout")
+    navigate("/Checkout");
+  }
+
+  const handleAccountClick = (event) => {
+    console.log("--> Account")
+    navigate("/Account");
+  }
+
   return (
     <div className="page">
       <div className="head">
-        {sessionData ? <HomeHeaderBasket /> : <HomeHeader />}
+        <BackHeader />
+        <header className="header">
+        <h2 className="h2">Page Title Home</h2>
+        <div className="buttons">
+          <button className="header-button" onClick={handleCheckoutClick}>Checkout</button>
+          <button className="header-button" onClick={handleAccountClick}>Account</button>
+        </div>
+      </header>
+        
       </div>
       <div className="product-grid">
         {data.map((skin, i) => (
@@ -72,11 +88,23 @@ function Basket() {
             <h4>{skin.skin_value}</h4>
             <h4>{skin.quantity}</h4>
             <h4>{skin.quantity * skin.skin_value}</h4>
+            <button onClick={() => deleteCart(skin, navigate)}>Delete from Cart</button>
           </div>
         ))}
       </div>
     </div>
   );
+}
+
+function deleteCart(skin, navigate){
+  console.log(skin);
+  axios
+      .post("http://localhost:3000/deleteCart", {skin})
+      
+      .then((response) => {
+        console.log("Data sent successfully:", response.data);
+        window.location.reload();
+      })
 }
 
 export default Basket;
