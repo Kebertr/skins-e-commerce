@@ -556,6 +556,34 @@ app.post("/checkout", (req, res) => {
   );
 });
 
+app.get("/getAdmin", (req, res) => {
+  const { id } = req.query;
+  //example of url for using productId is 'http://localhost:3000/getAdmin?id=1' for id=1
+  connection.query(
+    "SELECT adminRole FROM users WHERE id = ?",
+    [id],
+    (error, results) => {
+      if (error) {
+        res.status(400).send("Problem gettings the basket");
+        return;
+      }
+      //You get a list with json objects back
+      console.log(results);
+      res.json(results);
+    }
+  );
+});
+
+app.get("/getOrders", (req, res) => {
+  connection.query("SELECT * FROM orders", (error, results) => {
+    if (error) {
+      res.status(400).send("Problem getting all users");
+      return;
+    }
+    //Return all users
+    res.json(results);
+  });
+});
 
 //Listen on port 9000
 const PORT = process.env.PORT || 3000;
