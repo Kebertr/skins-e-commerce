@@ -104,7 +104,25 @@ function AdminPanel() {
                                         document.getElementById("value").value,
                                         document.getElementById("stock").value,
                                         document.getElementById("image").value)}>Add skin</button>
+        <p>Change stock of a skin</p>
+        <input
+          id="stock2"
+          type="number"
+          name="stock2"
+          placeholder="How many skins should be in stock?"
+          required
+         />    
+        <input
+          id="skin.id"
+          type="number"
+          name="skin.id"
+          placeholder="Skins ID"
+          required
+        />
 
+        <button
+          onClick={() =>changeStock(document.getElementById("stock2").value, 
+                                    document.getElementById("skin.id").value)}>Change stock</button>
 
 
       </div>
@@ -113,13 +131,34 @@ function AdminPanel() {
 }
 
 function addSkin(skin_name, category, skin_value, stock, image_location){
-  axios
+  if(stock<=0 || skin_value <=0){
+    alert("Can't input negative values");
+  }else{
+    axios
       .post("http://localhost:3000/createSkin", {skin_name, category, skin_value, stock, image_location})
       
       .then((response) => {
         console.log("Data sent successfully:", response.data);
         window.location.reload();
       })
+  }
+  
+}
+function changeStock(stock, id) {
+  if (stock <= 0 || id <= 0) {
+    alert("Can't input negative values");
+  } else {
+    axios
+      .put("http://localhost:3000/changeSkinStockAdmin", { stock, id })
+      .then((response) => {
+        console.log("Data sent successfully:", response.data);
+        window.location.reload(); // Reload page after changes are made
+      })
+      .catch((error) => {
+        console.error("Error changing stock:", error);
+        alert("Failed to change stock. Check the console for details.");
+      });
+  }
 }
 
 export default AdminPanel;
