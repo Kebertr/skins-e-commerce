@@ -371,6 +371,34 @@ app.put("/changeSkinStock", (req, res) => {
     }
   );
 });
+app.put("/changeSkinStockAdmin", (req, res) => {
+  const { stock, id } = req.body; // getting id and stock from request body
+
+  if (!stock || !id) {
+    return res.status(400).json({ error: "id or stock is missing" });
+  }
+  if (stock < 0) {
+    return res.status(400).json({ error: "Can't input negative stock values" });
+  }
+
+  connection.query(
+    "UPDATE skins SET stock = ? WHERE id = ?",
+    [stock, id],
+    (error, result) => {
+      
+      if (error) {
+        console.error("Error updating stock:", error);
+        return res.status(500).json({ error: "Failed to update stock" });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Skin not found" });
+      }
+
+      res.status(200).json({ message: "Successfully updated stock", stock, id });
+    }
+  );
+});
+
 
 app.post("/createSkin", (req, res) => {
   const { skin_name, category, skin_value, stock, image_location } = req.body;
@@ -386,6 +414,7 @@ app.post("/createSkin", (req, res) => {
     }
   );
 });
+
 
 //Get all reviews
 app.get("/reviewProduct", (req, res) => {
