@@ -106,7 +106,6 @@ function Account() {
   );
 }
 function Admin(navigate, sessionData){
-  console.log(sessionData);
   var userId = sessionData.userId;
   axios
     .get(`http://localhost:3000/getAdmin?id=${userId}`)
