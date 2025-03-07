@@ -62,7 +62,7 @@ function Register() {
           <h2>Register</h2>
           <form action="#" method="POST" onSubmit={handleSubmit}>
             <input
-              id=""
+              id="u"
               type="text"
               name="username"
               placeholder="Username"
