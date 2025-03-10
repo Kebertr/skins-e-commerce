@@ -180,7 +180,10 @@ function createSession(req, connection, username) {
       const userId = results[0].id;
       let expirationTime = new Date(req.session.cookie._expires);
       expirationTime = new Date(expirationTime.getTime() + 60 * 60 * 1000); // Add 1 hour
-      const formattedExpirationTime = expirationTime.toISOString().slice(0, 19).replace("T", " ");
+      const formattedExpirationTime = expirationTime
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ");
 
       connection.query(
         "INSERT INTO user_sessions (session_id, username, userId, expiration_time, cash) VALUES (?, ?, ?, ?, ?)",
@@ -240,7 +243,8 @@ app.get("/sessionId", (req, res) => {
 app.post("/cash", (req, res) => {
   const { username, user_password } = req.body;
   console.log(req.body);
-  connection.query( //add cash to account
+  connection.query(
+    //add cash to account
     "UPDATE users SET cash = ? WHERE username = ?",
     [req.body.cash, req.body.username],
     (error, results) => {
@@ -250,7 +254,8 @@ app.post("/cash", (req, res) => {
       }
     }
   );
-  connection.query( //add cash to session
+  connection.query(
+    //add cash to session
     "UPDATE user_sessions SET cash = ? WHERE username = ?",
     [req.body.cash, req.body.username],
     (error, results) => {
@@ -260,7 +265,7 @@ app.post("/cash", (req, res) => {
       }
     }
   );
-})
+});
 
 //Gett session
 app.get("/session", (req, res) => {
@@ -300,21 +305,6 @@ app.get("/user", (req, res) => {
   );
 });
 
-//Delete seasion ID
-/*app.post('/sessionId', (req, res) => {
-  const { sessionId } = req.body;
-  connection.query('UPDATE users SET session_id = NULL WHERE session_id = ?', [sessionId], (err, result){
-    if(err){
-      console.error("Error deleting session");
-      return;
-    }
-
-    console.log("session id deleted");
-  })
-
-
-})*/
-
 //Skins
 //Get all skins
 app.get("/skins", (req, res) => {
@@ -329,20 +319,24 @@ app.get("/skins", (req, res) => {
 });
 
 // Get a skin with ID
-app.get('/skins/:id', (req, res) => {
-  const id = req.params.id; 
-  connection.query('SELECT * FROM skins WHERE id = ?', [id], (error, results) => {
-    if (error) {
-      console.error('Error fetching skin:', error);
-      res.status(500).send('Problem getting skin'); // server errors
-      return;
+app.get("/skins/:id", (req, res) => {
+  const id = req.params.id;
+  connection.query(
+    "SELECT * FROM skins WHERE id = ?",
+    [id],
+    (error, results) => {
+      if (error) {
+        console.error("Error fetching skin:", error);
+        res.status(500).send("Problem getting skin"); // server errors
+        return;
+      }
+      if (results.length === 0) {
+        res.status(404).send("Skin not found"); // no skin is found
+        return;
+      }
+      res.json(results[0]); // Return the only result
     }
-    if (results.length === 0) {
-      res.status(404).send('Skin not found'); // no skin is found
-      return;
-    }
-    res.json(results[0]); // Return the only result
-  });
+  );
 });
 
 app.put("/changeSkinStock", (req, res) => {
@@ -408,10 +402,10 @@ app.get("/reviewProduct", (req, res) => {
             res.status(400).send("Error getting username");
             return;
           }
-          for(let i = 0; i < result.length; i++){
+          for (let i = 0; i < result.length; i++) {
             result[i]["username"] = resu[0].username;
           }
-          console.log(result)
+          console.log(result);
           res.json(result);
         }
       );
@@ -420,16 +414,48 @@ app.get("/reviewProduct", (req, res) => {
 });
 
 app.post("/makeReview", (req, res) => {
-  const { review, grade, userId, productId } = req.body;
+  const { review, grade, userId, productId, productName } = req.body;
+
+  //check how many reviews user has made
   connection.query(
-    "INSERT INTO reviews (review, grade, userId, productId) VALUES (?, ?, ?, ?)",
-    [review, grade, userId, productId],
+    "SELECT id FROM reviews WHERE userId = ? AND productId = ?",
+    [userId, productId],
     (error, result) => {
+      console.log("result: ", result);
       if (error) {
         res.status(400).send(error);
         return;
+      }else if (result.length >= 1) {
+        res.status(400).send("You have already reviewed this product.");
+        return;
       }
-      res.status(201).send("Made the review");
+      //check how if user owns item
+      connection.query(
+        "SELECT id FROM orders WHERE userId = ? AND skin_name = ?",
+        [userId, productName],
+        (error, result2) => {
+          console.log("result2: ", result2);
+          if (error) {
+            res.status(400).send(error);
+            return;
+          } else if(result2.length < 1) {
+            res.status(400).send("You don't own this item");
+            return;
+          }
+          //make review
+          connection.query(
+            "INSERT INTO reviews (review, grade, userId, productId) VALUES (?, ?, ?, ?)",
+            [review, grade, userId, productId],
+            (error, result) => {
+              if (error) {
+                res.status(400).send(error);
+                return;
+              }
+              res.status(201).send("Made the review");
+            }
+          );
+        }
+      );
     }
   );
 });
@@ -461,14 +487,14 @@ app.post("/addSkin", (req, res) => {
       FROM skins
       WHERE id = ?`,
     [quantity, userId, productId, productId],
-        (err, resultBask) => {
-          if (err) {
-            res.status(400).send("Error adding skin to basket");
-            return;
-          }
-          res.status(201).send("successfully added skin to basket");
-        }
-      );
+    (err, resultBask) => {
+      if (err) {
+        res.status(400).send("Error adding skin to basket");
+        return;
+      }
+      res.status(201).send("successfully added skin to basket");
+    }
+  );
 });
 
 app.post("/deleteCart", (req, res) => {
@@ -484,10 +510,10 @@ app.post("/deleteCart", (req, res) => {
       res.status(200).send("successfully deleted basket for user");
     }
   );
-})
+});
 
 app.post("/checkout", (req, res) => {
-  const { userId , cash, username, data} = req.body;
+  const { userId, cash, username, data } = req.body;
   connection.query(
     "SELECT * FROM Basket WHERE userId = ?",
     [userId],
@@ -496,11 +522,11 @@ app.post("/checkout", (req, res) => {
         res.status(400).send("Problem getting basket for user");
         return;
       }
-      results.forEach(result => {
-      var cost = result.skin_value*result.quantity;
-      connection.query(
-        "INSERT INTO orders (userId, cost, skin_name) VALUES (?, ?, ?)",
-      [userId, cost, result.skin_name],
+      results.forEach((result) => {
+        var cost = result.skin_value * result.quantity;
+        connection.query(
+          "INSERT INTO orders (userId, cost, skin_name) VALUES (?, ?, ?)",
+          [userId, cost, result.skin_name],
           (error, resultOrder) => {
             if (error) {
               res.status(400).send("Error adding to orders");
@@ -509,9 +535,10 @@ app.post("/checkout", (req, res) => {
             res.status(201).send("successfully added to orders");
           }
         );
-      })
+      });
     }
   );
+
   connection.query(
     "DELETE FROM Basket WHERE userId = ?",
     [userId],
@@ -523,18 +550,21 @@ app.post("/checkout", (req, res) => {
       res.status(200).send("successfully deleted basket for user");
     }
   );
-  data.forEach(prop => {
-    connection.query( 
+
+  data.forEach((prop) => {
+    connection.query(
       "UPDATE skins SET stock = ? WHERE id = ?",
-    [prop.stock-prop.quantity, prop.productId],
-    (error, results) => {
-      if (error) {
-        res.status(400).send("Problem setting cash");
-        return;
+      [prop.stock - prop.quantity, prop.productId],
+      (error, results) => {
+        if (error) {
+          res.status(400).send("Problem setting cash");
+          return;
+        }
       }
-    })
+    );
   });
-  connection.query( 
+
+  connection.query(
     "UPDATE users SET cash = ? WHERE username = ?",
     [cash, username],
     (error, results) => {
@@ -544,7 +574,8 @@ app.post("/checkout", (req, res) => {
       }
     }
   );
-  connection.query( 
+
+  connection.query(
     "UPDATE user_sessions SET cash = ? WHERE username = ?",
     [cash, username],
     (error, results) => {
