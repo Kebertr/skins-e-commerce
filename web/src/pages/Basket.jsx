@@ -55,7 +55,7 @@ function Basket() {
       .catch((error) => {
         console.log("Oops that should not happen");
       });
-      
+      console.log(data);
   };
 
   const handleCheckoutClick = (event) => {

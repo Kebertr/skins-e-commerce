@@ -493,17 +493,55 @@ app.post("/makeReview", (req, res) => {
 //Get all skins in the basket
 app.get("/basket", (req, res) => {
   const { id } = req.query;
-  //example of url for using productId is 'http://localhost:3000/changeSkinStock?id=1' for id=1
   connection.query(
-    "SELECT * FROM Basket WHERE userId = ?",
+    "SELECT productId FROM Basket WHERE userId = ?",
     [id],
-    (error, results) => {
+    (error, resu) => {
       if (error) {
         res.status(400).send("Problem gettings the basket");
         return;
       }
+      console.log(resu);
+      resu.forEach(value =>{
+        console.log(value.productId);
+      
       //You get a list with json objects back
-      res.json(results);
+      connection.query(
+        "SELECT skin_value, stock, id FROM skins WHERE id = ?",
+        [value.productId],
+        (error, results) => {
+          if (error) {
+            console.error("Error fetching skin:", error);
+            res.status(500).send("Problem getting skin"); // server errors
+            return;
+          }
+          console.log(results)
+          connection.query(
+            "UPDATE Basket SET stock = ?, skin_value = ? WHERE userId = ? && productId = ?",
+            [results[0].stock, results[0].skin_value, id, results[0].id],
+            (error, result) => {
+              
+              if (error) {
+                console.error("Error updating stock:", error);
+                return res.status(500).json({ error: "Failed to update stock" });
+              }
+              connection.query(
+                "SELECT * FROM Basket WHERE userId = ?",
+                [id],
+                (error, endres) => {
+                  if (error) {
+                    res.status(400).send("Problem gettings the basket");
+                    return;
+                  }
+                  //You get a list with json objects back
+                  console.log(endres);
+                  res.json(endres);
+                }
+              );
+            }
+          );
+        });
+      });
     }
   );
 });

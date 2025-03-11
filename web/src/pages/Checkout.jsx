@@ -59,7 +59,7 @@ function Checkout() {
         console.log("Oops that should not happen");
       });
   };
-  
+  console.log(data);
   let totalValue = data.reduce((sum, skin) => sum + skin.skin_value * skin.quantity, 0);
 
 
