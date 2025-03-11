@@ -1,0 +1,48 @@
+.body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: flex-start; /* Align to the left */
+    align-items: center; 
+    height: auto; 
+    background-color: transparent; 
+    padding: 10px;
+    position: absolute; 
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.barOfSearch {
+    background:5px 5px 15px rgba(189, 43, 189, 0.89);
+    display: flex;
+    flex-direction: row; 
+    justify-content: flex-start; /* Align to the left */
+    align-items: center; 
+    padding: 1px; 
+    border-radius: 5px; 
+    
+    text-align: center;
+}
+
+input {
+    width: 200px; 
+    padding: 8px; 
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px; /* Add space between input and button */
+    font-size: 14px; 
+}
+
+button {
+    padding: 8px 12px; 
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff; 
+    color: white; 
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}

@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
 import HomeHeader from "./subElements/HomeHeader";
 import HomeHeaderLoggedIn from "./subElements/HomeHeaderLoggedIn";
+import SearchBar from "./subElements/searchBar"; // Import the SearchBar component
 
 function getSession(callback) {
   var sessionID = document.cookie
     .split("; ")
-    .find(row => row.startsWith("sessionId="))
+    .find((row) => row.startsWith("sessionId="))
     ?.split("=")[1];
 
   if (!sessionID) {
@@ -30,7 +31,8 @@ function getSession(callback) {
 
 function Home() {
   const navigate = useNavigate();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([]); // All skins from the API
+  const [filteredData, setFilteredData] = useState([]); // Filtered skins based on search
   const [sessionData, setSessionData] = useState(null); // Store session info
 
   useEffect(() => {
@@ -44,31 +46,52 @@ function Home() {
   }, []);
 
   const fetchSkins = () => {
-    axios.get("http://localhost:3000/skins")
+    axios
+      .get("http://localhost:3000/skins")
       .then((response) => {
-        setData(response.data);
+        setData(response.data); // Set all skins
+        setFilteredData(response.data); // Initialize filteredData with all skins
       })
       .catch((error) => {
         console.log("Oops that should not happen");
       });
   };
+
   const handleProductClick = (id) => {
-    console.log("--> Go to product")
+    console.log("--> Go to product");
     navigate(`/Details/${id}`);
-  }
+  };
+
+  // Handle search text change
+  const handleFilterTextChange = (text) => {
+    if (text === "") {
+      // If text is empty, show all skins
+      setFilteredData(data);
+    } else {
+      // else show skins that user searched for, both name and category is searcheble 
+      const filteredSkins = data.filter((skin) =>
+        skin.skin_name.toLowerCase().includes(text.toLowerCase()) ||
+        skin.category.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filteredSkins);
+    }
+  };
 
   return (
     <div className="page">
       <div className="head">
         {sessionData ? <HomeHeaderLoggedIn /> : <HomeHeader />}
+        <SearchBar onFilterTextChange={handleFilterTextChange} /> {/* Add SearchBar */}
       </div>
       <div className="product-grid">
-        {data.map((skin, i) => (
-        <div key={skin.id || i} className="product-card" >
-          <img src={skin.image_location} alt={skin.name} />
-          <button onClick={() => handleProductClick(skin.id)}>{skin.skin_name}</button>
-          <p>{skin.skin_value} Cash-Coins</p>
-        </div>
+        {filteredData.map((skin, i) => (
+          <div key={skin.id || i} className="product-card">
+            <img src={skin.image_location} alt={skin.name} />
+            <button onClick={() => handleProductClick(skin.id)}>
+              {skin.skin_name}
+            </button>
+            <p>{skin.skin_value} Cash-Coins</p>
+          </div>
         ))}
       </div>
     </div>
