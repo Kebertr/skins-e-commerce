@@ -50,7 +50,6 @@ function Checkout() {
   const fetchBasket = () => {
     var userId = sessionData.userId;
     var url = `http://localhost:3000/basket?id=${userId}`
-    console.log(url);
     axios.get(url)
       .then((response) => {
         setData(response.data);
@@ -59,7 +58,7 @@ function Checkout() {
         console.log("Oops that should not happen");
       });
   };
-  console.log(data);
+  
   let totalValue = data.reduce((sum, skin) => sum + skin.skin_value * skin.quantity, 0);
 
 
@@ -84,7 +83,6 @@ function Checkout() {
   );
 }
 function pay(totalValue, data, sessionData, navigate){
-  console.log(data);
   var check = false;
   data.forEach(prop => {
     if(sessionData?.cash > totalValue && prop.quantity < prop.stock){

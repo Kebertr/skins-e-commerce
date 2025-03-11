@@ -501,7 +501,6 @@ app.get("/basket", (req, res) => {
         res.status(400).send("Problem gettings the basket");
         return;
       }
-      console.log(resu);
       resu.forEach(value =>{
         console.log(value.productId);
       
@@ -515,7 +514,6 @@ app.get("/basket", (req, res) => {
             res.status(500).send("Problem getting skin"); // server errors
             return;
           }
-          console.log(results)
           connection.query(
             "UPDATE Basket SET stock = ?, skin_value = ? WHERE userId = ? && productId = ?",
             [results[0].stock, results[0].skin_value, id, results[0].id],
@@ -534,7 +532,6 @@ app.get("/basket", (req, res) => {
                     return;
                   }
                   //You get a list with json objects back
-                  console.log(endres);
                   res.json(endres);
                 }
               );

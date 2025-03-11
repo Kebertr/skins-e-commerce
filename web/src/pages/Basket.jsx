@@ -55,7 +55,6 @@ function Basket() {
       .catch((error) => {
         console.log("Oops that should not happen");
       });
-      console.log(data);
   };
 
   const handleCheckoutClick = (event) => {
@@ -97,7 +96,6 @@ function Basket() {
 }
 
 function deleteCart(skin, navigate){
-  console.log(skin);
   axios
       .post("http://localhost:3000/deleteCart", {skin})
       
