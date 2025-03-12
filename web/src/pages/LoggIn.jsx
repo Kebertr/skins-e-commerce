@@ -34,9 +34,12 @@ function LoggIn() {
           .catch((error) => {
             console.error("could not get session id");
           });
+        
+        setTimeout(() => {
+          //Navigate to home page
+          navigate("/");
+        }, 200); // 0,2 seconds
 
-        //Navigate to home page
-        navigate("/");
       })
       .catch((error) => {
         alert("Wrong username or password!");

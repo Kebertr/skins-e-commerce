@@ -66,14 +66,19 @@ function Basket() {
     console.log("--> Account")
     navigate("/Account");
   }
+  
+  const handleBackClick = (event) => {
+    console.log("--> back")
+    navigate("/");
+  }
 
   return (
     <div className="page">
       <div className="head">
-        <BackHeader />
         <header className="header">
         <h2 className="h2">Page Title Home</h2>
-        <div className="buttons">
+        <div className="buttonsBasket">
+          <button className="header-button" onClick={handleBackClick}>Home</button>
           <button className="header-button" onClick={handleCheckoutClick}>Checkout</button>
           <button className="header-button" onClick={handleAccountClick}>Account</button>
         </div>
