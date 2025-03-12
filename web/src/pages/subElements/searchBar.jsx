@@ -13,10 +13,10 @@ export default function SearchBar({ onFilterTextChange }) {
   };
 
   return (
-    <div className="body">
+    <div className="bodysearchbar">
       <div className="barOfSearch">
         <form>
-          <input
+          <input className="inputsearch"
             type="text"
             value={searchText}
             placeholder="Search..."

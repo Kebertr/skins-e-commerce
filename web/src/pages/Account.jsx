@@ -38,16 +38,35 @@ function Account() {
   useEffect(() => {
     getSession((session) => {
       setSessionData(session);
-      console.log(session.cash);
     });
   }, []);
+
+  useEffect(() => {
+    if (sessionData) {
+      fetchOrders();
+    }
+  }, [sessionData]); 
+
+  const fetchOrders = () => {
+    var userId = sessionData.userId;
+    var url = `http://localhost:3000/getOrders?userId=${userId}`
+    
+    axios.get(url)
+      .then((response) => {
+        console.log(response.data);
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.log("Oops that should not happen");
+      });
+  };
 
   //Saves inputed data in usestate variables (by id)
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.id]: event.target.value });
   };
 
-  console.log(sessionData);
+
   //handels click when want to uppdate cash-coins
 
   var username = sessionData?.username;
@@ -71,7 +90,7 @@ function Account() {
     <>
       <BackHeader />
 
-      <div className="body">
+      <div className="bodyAccount">
         <div className="login-container">
           <h2>
             {
@@ -101,7 +120,19 @@ function Account() {
             <button onClick={() => Admin(navigate, sessionData)}>Admin Panel</button>
           </div>
         </div>
+        <h1 className="h1Orders">Orders</h1>
+        <div className="product-grid-account">
+          {data.map((skin, i) => (
+            <div className="product-card">
+              <h4>Name: {skin.skin_name}</h4>
+              <h4>Price: {skin.price}</h4>
+              <h4>Amount: {skin.quantity}</h4>
+              <h4>TotalCost: {skin.totalcost}</h4>
+            </div>
+          ))}
       </div>
+      </div>
+      
     </>
   );
 }

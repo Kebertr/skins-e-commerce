@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "../../styles/HomeHeaderStyles.css"
-import { useState } from "react";
+import "../../styles/HomeHeaderStyles.css";
 
 const HomeHeader = () => {
   const navigate = useNavigate();
@@ -18,7 +17,7 @@ const HomeHeader = () => {
   return (
     <>
       <header className="header">
-        <h2 className="h2">Page Title Home</h2>
+        <h2 className="h2">King-skins</h2>
         <div className="buttons">
           <button className="header-button" onClick={handleRegisterClick}>Register</button>
           <button className="header-button" onClick={handleLoggInClick}>Logg In</button>

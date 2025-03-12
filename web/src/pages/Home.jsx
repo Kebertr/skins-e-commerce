@@ -76,7 +76,7 @@ function Home() {
       setFilteredData(filteredSkins);
     }
   };
-
+  
   return (
     <div className="page">
       <div className="head">

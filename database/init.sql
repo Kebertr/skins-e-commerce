@@ -43,7 +43,9 @@ CREATE TABLE IF NOT EXISTS reviews (
 CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     userId INT NOT NULL,
-    cost INT NOT NULL,
+    price INT NOT NULL,
+    quantity INT NOT NULL,
+    totalcost INT NOT NULL,
     skin_name TEXT NOT NULL,
     ord_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userId) REFERENCES users(id)
