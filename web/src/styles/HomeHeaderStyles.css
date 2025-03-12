@@ -18,6 +18,11 @@
     display: flex;
 }
 
+.buttonsBasket{
+    margin-left: 24vw;
+    display: flex;
+}
+
 header {
     display: flex;
     align-items: center; /* Centers all children (button & title) */

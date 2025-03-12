@@ -52,6 +52,7 @@ function Home() {
         console.log("Oops that should not happen");
       });
   };
+
   const handleProductClick = (id) => {
     console.log("--> Go to product")
     navigate(`/Details/${id}`);

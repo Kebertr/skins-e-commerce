@@ -49,14 +49,6 @@ app.use(
   })
 );
 
-/*const sessionStore = new MySQLStore({
-  host: 'database',
-  user: 'user',
-  password: 'password',
-  database: 'mydatabase',
-  port: '3306',
-});*/
-
 //Users
 //Get all users
 app.get("/users", (req, res) => {
@@ -158,47 +150,64 @@ function createSession(req, connection, username) {
         return;
       }
       console.log("session deleted");
-    }
-  );
 
-  //Create new session
-  req.session.user = { username };
-  console.log("seasion created, id:", req.session);
-
-  connection.query(
-    "SELECT * FROM users WHERE username = ?",
-    [username],
-    (error, results) => {
-      if (error) {
-        res.status(400).send("Problem getting all users");
-        return;
-      }
-      console.log("result: ", results);
-
-      const cash = results[0].cash;
-      const sessionId = req.session.id;
-      const userId = results[0].id;
-      let expirationTime = new Date(req.session.cookie._expires);
-      expirationTime = new Date(expirationTime.getTime() + 60 * 60 * 1000); // Add 1 hour
-      const formattedExpirationTime = expirationTime
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " ");
+      //Create new session
+      req.session.user = { username };
+      console.log("seasion created, id:", req.session);
 
       connection.query(
-        "INSERT INTO user_sessions (session_id, username, userId, expiration_time, cash) VALUES (?, ?, ?, ?, ?)",
-        [sessionId, username, userId, formattedExpirationTime, cash],
-        (err, result) => {
-          if (err) {
-            console.log("could not add session to db");
+        "SELECT * FROM users WHERE username = ?",
+        [username],
+        (error, results) => {
+          if (error) {
+            res.status(400).send("Problem getting all users");
             return;
           }
-          console.log("session added");
+
+          const cash = results[0].cash;
+          const sessionId = req.session.id;
+          const userId = results[0].id;
+          let expirationTime = new Date(req.session.cookie._expires);
+          expirationTime = new Date(expirationTime.getTime() + 60 * 60 * 1000); // 1 hour
+          const formattedExpirationTime = expirationTime
+            .toISOString()
+            .slice(0, 19)
+            .replace("T", " ");
+
+          connection.query(
+            "INSERT INTO user_sessions (session_id, username, userId, expiration_time, cash) VALUES (?, ?, ?, ?, ?)",
+            [sessionId, username, userId, formattedExpirationTime, cash],
+            (err, result) => {
+              if (err) {
+                console.log("could not add session to db");
+                return;
+              }
+              console.log("session added");
+            }
+          );
         }
       );
     }
   );
 }
+
+//Delete session
+app.post("/deleteSession", (req, res) => {
+  const { sessionID } = req.body;
+  //Makes query to database
+  connection.query(
+    "DELETE FROM user_sessions WHERE session_id = ?",
+    [sessionID],
+    (err, result) => {
+      if (err) {
+        console.log("could not delete session");
+        return;
+      }
+      console.log("session deleted (delete function)");
+      res.status(200).send("session deleted (delete function)");
+    }
+  );
+});
 
 //Get seasion ID
 app.get("/sessionId", (req, res) => {
@@ -254,6 +263,7 @@ app.post("/cash", (req, res) => {
       }
     }
   );
+
   connection.query(
     //add cash to session
     "UPDATE user_sessions SET cash = ? WHERE username = ?",
@@ -379,7 +389,6 @@ app.put("/changeSkinStockAdmin", (req, res) => {
     "UPDATE skins SET stock = ? WHERE id = ?",
     [stock, id],
     (error, result) => {
-      
       if (error) {
         console.error("Error updating stock:", error);
         return res.status(500).json({ error: "Failed to update stock" });
@@ -388,11 +397,12 @@ app.put("/changeSkinStockAdmin", (req, res) => {
         return res.status(404).json({ error: "Skin not found" });
       }
 
-      res.status(200).json({ message: "Successfully updated stock", stock, id });
+      res
+        .status(200)
+        .json({ message: "Successfully updated stock", stock, id });
     }
   );
 });
-
 
 app.post("/createSkin", (req, res) => {
   const { skin_name, category, skin_value, stock, image_location } = req.body;
@@ -408,7 +418,6 @@ app.post("/createSkin", (req, res) => {
     }
   );
 });
-
 
 //Get all reviews
 app.get("/reviewProduct", (req, res) => {
@@ -454,7 +463,7 @@ app.post("/makeReview", (req, res) => {
       if (error) {
         res.status(400).send(error);
         return;
-      }else if (result.length >= 1) {
+      } else if (result.length >= 1) {
         res.status(400).send("You have already reviewed this product.");
         return;
       }
@@ -467,7 +476,7 @@ app.post("/makeReview", (req, res) => {
           if (error) {
             res.status(400).send(error);
             return;
-          } else if(result2.length < 1) {
+          } else if (result2.length < 1) {
             res.status(400).send("You don't own this item");
             return;
           }
