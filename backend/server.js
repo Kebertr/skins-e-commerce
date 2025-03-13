@@ -220,7 +220,7 @@ app.get("/sessionId", (req, res) => {
         console.error("Error getting session id", err);
         res.status(400).send("Error fetching sessionId for user: " + username);
         return;
-      } else if (Date(result[0].expiration_time) > Date.now()) {
+      } /*else if (Date(result[0].expiration_time) > Date.now()) {
         //if sesion expired delete session
         connection.query(
           "DELETE FROM user_sessions WHERE username = ?",
@@ -235,7 +235,7 @@ app.get("/sessionId", (req, res) => {
         );
         res.status(600).send("Session has expired");
         return;
-      } else if (result[0].session_id.length == 0) {
+      }*/ else if (result[0].session_id.length == 0) {
         //if session empty
         console.log("session id NULL");
         res.status(400).send("No session id found for user");
@@ -375,31 +375,57 @@ app.put("/changeSkinStock", (req, res) => {
     }
   );
 });
+
 app.put("/changeSkinStockAdmin", (req, res) => {
-  const { stock, id } = req.body; // getting id and stock from request body
-
-  if (!stock || !id) {
-    return res.status(400).json({ error: "id or stock is missing" });
-  }
-  if (stock < 0) {
-    return res.status(400).json({ error: "Can't input negative stock values" });
-  }
-
+  const { stock, name } = req.body; 
   connection.query(
-    "UPDATE skins SET stock = ? WHERE id = ?",
-    [stock, id],
+    "SELECT id FROM skins WHERE skin_name = ?",
+    [name],
     (error, result) => {
       if (error) {
         console.error("Error updating stock:", error);
-        return res.status(500).json({ error: "Failed to update stock" });
+        return res.status(500).send("problem getting id");
       }
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: "Skin not found" });
-      }
+      console.log(result);
+      connection.query(
+        "UPDATE skins SET stock = ? WHERE id = ?",
+        [stock, result[0].id],
+        (error, resu) => {
+          if (error) {
+            console.error("Error updating stock:", error);
+            return res.status(500).send("Error updating stock");
+          }
+    
+          res.status(200).send("Updated stock");
+        }
+      );
+    }
+  );
+});
 
-      res
-        .status(200)
-        .json({ message: "Successfully updated stock", stock, id });
+app.put("/changeSkinPriceAdmin", (req, res) => {
+  const { price, name } = req.body; 
+  connection.query(
+    "SELECT id FROM skins WHERE skin_name = ?",
+    [name],
+    (error, result) => {
+      if (error) {
+        console.error("Error updating stock:", error);
+        return res.status(500).send("problem getting id");
+      }
+      console.log(result);
+      connection.query(
+        "UPDATE skins SET skin_value = ? WHERE id = ?",
+        [price, result[0].id],
+        (error, resu) => {
+          if (error) {
+            console.error("Error updating stock:", error);
+            return res.status(500).send("Error updating price");
+          }
+    
+          res.status(200).send("Updated price");
+        }
+      );
     }
   );
 });
@@ -598,14 +624,13 @@ app.post("/checkout", (req, res) => {
       results.forEach((result) => {
         var cost = result.skin_value * result.quantity;
         connection.query(
-          "INSERT INTO orders (userId, cost, skin_name) VALUES (?, ?, ?)",
-          [userId, cost, result.skin_name],
+          "INSERT INTO orders (userId, price, quantity, totalCost, skin_name) VALUES (?, ?, ?, ?, ?)",
+          [userId, result.skin_value, result.quantity, cost, result.skin_name],
           (error, resultOrder) => {
             if (error) {
               res.status(400).send("Error adding to orders");
               return;
             }
-            res.status(201).send("successfully added to orders");
           }
         );
       });
@@ -620,7 +645,6 @@ app.post("/checkout", (req, res) => {
         res.status(400).send("Problem getting rid of basket");
         return;
       }
-      res.status(200).send("successfully deleted basket for user");
     }
   );
 
@@ -656,6 +680,7 @@ app.post("/checkout", (req, res) => {
         res.status(400).send("Problem setting cash");
         return;
       }
+      res.status(201).send("successfully added to orders");
     }
   );
 });
@@ -679,7 +704,8 @@ app.get("/getAdmin", (req, res) => {
 });
 
 app.get("/getOrders", (req, res) => {
-  connection.query("SELECT * FROM orders", (error, results) => {
+  const {userId} = req.query;
+  connection.query("SELECT * FROM orders WHERE userId=?", [userId], (error, results) => {
     if (error) {
       res.status(400).send("Problem getting all users");
       return;

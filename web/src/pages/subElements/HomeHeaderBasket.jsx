@@ -17,7 +17,7 @@ const HomeHeader = () => {
   return (
     <>
       <header className="header">
-        <h2 className="h2">Page Title Home</h2>
+        <h2 className="h2">King-skins</h2>
         <div className="buttons">
           <button className="header-button" onClick={handleCheckoutClick}>Basket</button>
           <button className="header-button" onClick={handleAccountClick}>Account</button>

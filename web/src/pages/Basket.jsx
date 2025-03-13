@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
-import BackHeader from "./subElements/BackHeader";
 function getSession(callback) {
   var sessionID = document.cookie
     .split("; ")
@@ -76,7 +75,7 @@ function Basket() {
     <div className="page">
       <div className="head">
         <header className="header">
-        <h2 className="h2">Page Title Home</h2>
+        <h2 className="h2">King-skins</h2>
         <div className="buttonsBasket">
           <button className="header-button" onClick={handleBackClick}>Home</button>
           <button className="header-button" onClick={handleCheckoutClick}>Checkout</button>

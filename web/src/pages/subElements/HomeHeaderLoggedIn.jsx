@@ -1,6 +1,6 @@
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../../styles/HomeHeaderStyles.css";
-import axios from "axios";
 
 const HomeHeader = () => {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const HomeHeader = () => {
   return (
     <>
       <header className="header">
-        <h2 className="h2">Page Title Home</h2>
+        <h2 className="h2">King-skins</h2>
         <div className="buttonsBasket">
           <button className="header-button" onClick={handleBasketClick}>Basket</button>
           <button className="header-button" onClick={handleAccountClick}>Account</button>

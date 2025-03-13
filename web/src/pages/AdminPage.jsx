@@ -53,14 +53,13 @@ function AdminPanel() {
     fetchOrders();
     }, []); 
 
-    console.log(data.data);
-
   return (
     <div className="page">
       <div className="head">
         <BackHeader />
       </div>
       <div className="product-grid">
+      <div className="product-card">
         <input
             id="name"
             type="text"
@@ -104,6 +103,8 @@ function AdminPanel() {
                                         document.getElementById("value").value,
                                         document.getElementById("stock").value,
                                         document.getElementById("image").value)}>Add skin</button>
+        </div>
+        <div className="product-card">
         <p>Change stock of a skin</p>
         <input
           id="stock2"
@@ -113,17 +114,39 @@ function AdminPanel() {
           required
          />    
         <input
-          id="skin.id"
-          type="number"
-          name="skin.id"
-          placeholder="Skins ID"
+          id="skin.name"
+          type="text"
+          name="skin.name"
+          placeholder="Skin name"
           required
         />
 
         <button
           onClick={() =>changeStock(document.getElementById("stock2").value, 
-                                    document.getElementById("skin.id").value)}>Change stock</button>
+                                    document.getElementById("skin.name").value)}>Change stock</button>
+        </div>
+        
+        <div className="product-card">
+        <p>Change price of a skin</p>
+        <input
+          id="price"
+          type="number"
+          name="price"
+          placeholder="What should the price be?"
+          required
+         />    
+        <input
+          id="skin_name_price"
+          type="text"
+          name="skin_price"
+          placeholder="skin name"
+          required
+        />
 
+        <button
+          onClick={() =>changePrice(document.getElementById("price").value, 
+                                    document.getElementById("skin_name_price").value)}>Change price</button>
+        </div>
 
       </div>
     </div>
@@ -144,12 +167,29 @@ function addSkin(skin_name, category, skin_value, stock, image_location){
   }
   
 }
-function changeStock(stock, id) {
-  if (stock <= 0 || id <= 0) {
+function changeStock(stock, name) {
+  if (stock <= 0 || name == "") {
     alert("Can't input negative values");
   } else {
     axios
-      .put("http://localhost:3000/changeSkinStockAdmin", { stock, id })
+      .put("http://localhost:3000/changeSkinStockAdmin", { stock, name })
+      .then((response) => {
+        console.log("Data sent successfully:", response.data);
+        window.location.reload(); // Reload page after changes are made
+      })
+      .catch((error) => {
+        console.error("Error changing stock:", error);
+        alert("Failed to change stock. Check the console for details.");
+      });
+  }
+}
+
+function changePrice(price, name) {
+  if (price <= 0 || name == "") {
+    alert("Can't input negative values");
+  } else {
+    axios
+      .put("http://localhost:3000/changeSkinPriceAdmin", { price, name })
       .then((response) => {
         console.log("Data sent successfully:", response.data);
         window.location.reload(); // Reload page after changes are made

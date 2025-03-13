@@ -6,8 +6,20 @@
     height: 100vh;
     background-color: #f4f4f4;
 }
+.bodyAccount {
+    margin-top: 10%;
+    align-self: center;
+    font-family: Arial, sans-serif;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+.h1Orders{
+    text-align: center;
+    align-self: center;
+}
 .login-container {
-    background: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -36,3 +48,14 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+.product-grid-account {
+    display: grid;
+    align-items: center;
+    align-self: center;
+    grid-template-columns: repeat(2, 1fr);
+    width: 80vw;
+    margin: auto;
+    gap: 20px; /* Space between cards */
+    margin-top: 0px; /* Adds space between header and cards */
+  }

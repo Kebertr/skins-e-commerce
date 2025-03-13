@@ -58,10 +58,10 @@ function Checkout() {
         console.log("Oops that should not happen");
       });
   };
-  
+  let totalQuantity = data.reduce((sum, skin) => sum + skin.quantity, 0);
   let totalValue = data.reduce((sum, skin) => sum + skin.skin_value * skin.quantity, 0);
 
-
+  console.log(data);
   return (
     <div className="page">
       <div className="head">
@@ -70,6 +70,8 @@ function Checkout() {
       <div className="product-grid">
             
           <div className="product-card">
+            <h2>Amount of products</h2>
+            <h2>{totalQuantity}</h2>
             <h2>Cost for the products</h2>
             <h2>{totalValue}</h2>
           </div>
@@ -83,6 +85,7 @@ function Checkout() {
   );
 }
 function pay(totalValue, data, sessionData, navigate){
+  console.log(data);
   var check = false;
   data.forEach(prop => {
     if(sessionData?.cash > totalValue && prop.quantity < prop.stock){
@@ -100,13 +103,16 @@ function pay(totalValue, data, sessionData, navigate){
   var userId = sessionData.userId;
   var username = sessionData.username;
   var cash = sessionData.cash-totalValue;
+  
   axios
       .post("http://localhost:3000/checkout", {userId, cash, username, data})
       
       .then((response) => {
         console.log("Data sent successfully:", response.data);
-        //Navigate to home page
-        navigate("/");
+        setTimeout(() => {
+          //Navigate to home page
+          navigate("/");
+        }, 500); // 0,2 seconds
       
         
       })
