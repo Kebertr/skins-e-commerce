@@ -33,23 +33,26 @@ function Register() {
       const newUser = {
         username: formData.u,
         user_password: formData.p1,
-        adminRole: formData.admin
+        adminRole: formData.admin,
       };
-    
-    axios
-      .post("http://localhost:3000/registerUser", newUser)
-      .then((response) => {
-        console.log("Data sent successfully:", response.data);
-        console.log(newUser);
-        //Navigate to home page
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Error sending data:", error);
-        setPasswordText("🚨 Username already exist")
-      });
-    } else { //Fields being empty is handeled automaticaly in form
-        setPasswordText("🚨 Are u blind? Passwords must match! 🚨")
+
+      let hostname = "http://" + window.location.hostname + ":3000/registerUser";
+
+      axios
+        .post(hostname, newUser)
+        .then((response) => {
+          console.log("Data sent successfully:", response.data);
+          console.log(newUser);
+          //Navigate to home page
+          navigate("/");
+        })
+        .catch((error) => {
+          console.error("Error sending data:", error);
+          setPasswordText("🚨 Username already exist");
+        });
+    } else {
+      //Fields being empty is handeled automaticaly in form
+      setPasswordText("🚨 Are u blind? Passwords must match! 🚨");
     }
   };
 

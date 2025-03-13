@@ -14,8 +14,10 @@ function getSession(callback) {
     return;
   }
 
+  let hostname = "http://" + window.location.hostname + ":3000/session";
+
   axios
-    .get("http://localhost:3000/session", { params: { sessionID } })
+    .get(hostname, { params: { sessionID } })
     .then((response) => {
       callback(response.data[0]); // Pass session data to callback
     })
@@ -38,8 +40,10 @@ function AdminPanel() {
 
 
   const fetchOrders = () => {
+    let hostname = "http://" + window.location.hostname + ":3000/getOrders";
+
     axios
-    .get(`http://localhost:3000/getOrders`)
+    .get(hostname)
     .then((response) => {
       setData(response);
     })
@@ -60,6 +64,7 @@ function AdminPanel() {
       </div>
       <div className="product-grid">
       <div className="product-card">
+      <p>Add a skin</p>
         <input
             id="name"
             type="text"
@@ -157,8 +162,10 @@ function addSkin(skin_name, category, skin_value, stock, image_location){
   if(stock<=0 || skin_value <=0){
     alert("Can't input negative values");
   }else{
+    let hostname = "http://" + window.location.hostname + ":3000/createSkin";
+
     axios
-      .post("http://localhost:3000/createSkin", {skin_name, category, skin_value, stock, image_location})
+      .post(hostname, {skin_name, category, skin_value, stock, image_location})
       
       .then((response) => {
         console.log("Data sent successfully:", response.data);
@@ -171,8 +178,10 @@ function changeStock(stock, name) {
   if (stock <= 0 || name == "") {
     alert("Can't input negative values");
   } else {
+    let hostname = "http://" + window.location.hostname + ":3000/changeSkinStockAdmin";
+
     axios
-      .put("http://localhost:3000/changeSkinStockAdmin", { stock, name })
+      .put(hostname, { stock, name })
       .then((response) => {
         console.log("Data sent successfully:", response.data);
         window.location.reload(); // Reload page after changes are made
@@ -188,8 +197,10 @@ function changePrice(price, name) {
   if (price <= 0 || name == "") {
     alert("Can't input negative values");
   } else {
+    let hostname = "http://" + window.location.hostname + ":3000/changeSkinPriceAdmin";
+
     axios
-      .put("http://localhost:3000/changeSkinPriceAdmin", { price, name })
+      .put(hostname, { price, name })
       .then((response) => {
         console.log("Data sent successfully:", response.data);
         window.location.reload(); // Reload page after changes are made

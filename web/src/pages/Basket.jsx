@@ -14,8 +14,10 @@ function getSession(callback) {
     return;
   }
 
+  let hostname = "http://" + window.location.hostname + ":3000/session";
+
   axios
-    .get("http://localhost:3000/session", { params: { sessionID } })
+    .get(hostname, { params: { sessionID } })
     .then((response) => {
       callback(response.data[0]); // Pass session data to callback
     })
@@ -45,9 +47,9 @@ function Basket() {
 
   const fetchBasket = () => {
     var userId = sessionData.userId;
-    var url = `http://localhost:3000/basket?id=${userId}`
+    let hostname = `http://${window.location.hostname}:3000/basket?id=${userId}`;
     
-    axios.get(url)
+    axios.get(hostname)
       .then((response) => {
         setData(response.data);
       })
@@ -100,8 +102,10 @@ function Basket() {
 }
 
 function deleteCart(skin, navigate){
+  let hostname = "http://" + window.location.hostname + ":3000/deleteCart";
+
   axios
-      .post("http://localhost:3000/deleteCart", {skin})
+      .post(hostname, {skin})
       
       .then((response) => {
         console.log("Data sent successfully:", response.data);

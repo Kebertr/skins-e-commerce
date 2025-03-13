@@ -17,15 +17,19 @@ function LoggIn() {
     event.preventDefault();
 
     const user = {
-        username: formData.username,
-        user_password: formData.password
-      };
+      username: formData.username,
+      user_password: formData.password,
+    };
+
+    let hostname = "http://" + window.location.hostname + ":3000/loginUser";
 
     axios
-      .post("http://localhost:3000/loginUser", user)
+      .post(hostname, user)
       .then((response) => {
+        hostname = "http://" + window.location.hostname + ":3000/sessionId";
+
         axios
-          .get("http://localhost:3000/sessionId", { params: { username: user.username } })
+          .get(hostname, { params: { username: user.username } })
           .then((response) => {
             //Create cookie with seasion id
             console.log(response.data);
@@ -34,12 +38,11 @@ function LoggIn() {
           .catch((error) => {
             console.error("could not get session id");
           });
-        
+
         setTimeout(() => {
           //Navigate to home page
           navigate("/");
         }, 200); // 0,2 seconds
-
       })
       .catch((error) => {
         alert("Wrong username or password!");
