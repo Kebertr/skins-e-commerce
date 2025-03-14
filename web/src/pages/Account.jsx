@@ -49,6 +49,7 @@ function Account() {
     }
   }, [sessionData]); 
 
+  
   const fetchOrders = () => {
     var userId = sessionData.userId;
     let hostname = `http://${window.location.hostname}:3000/getOrders?userId=${userId}`;

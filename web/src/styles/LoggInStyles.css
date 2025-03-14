@@ -5,6 +5,7 @@
     align-items: center;
     height: 100vh;
     background-color: #f4f4f4;
+
 }
 .bodyAccount {
     margin-top: 10%;
@@ -59,3 +60,15 @@ button:hover {
     gap: 20px; /* Space between cards */
     margin-top: 0px; /* Adds space between header and cards */
   }
+p{
+    color: black;
+}
+h1{
+    color: black;
+}
+h4{
+    color: black;
+}
+h2{
+    color: black;
+}

@@ -5,6 +5,7 @@ const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
+app.use(express.json());
 //import session from "express-session"
 
 const cors = require("cors");
@@ -193,7 +194,9 @@ function createSession(req, connection, username) {
 
 //Delete session
 app.post("/deleteSession", (req, res) => {
+  console.log("hej");
   const { sessionID } = req.body;
+  console.log(sessionID)
   //Makes query to database
   connection.query(
     "DELETE FROM user_sessions WHERE session_id = ?",
@@ -457,7 +460,6 @@ app.get("/reviewProduct", (req, res) => {
         res.status(400).send("Error getting reviews");
         return;
       }
-      console.log(result[0].userId);
       connection.query(
         "SELECT username FROM users WHERE id = ?",
         [result[0].userId],
@@ -581,19 +583,51 @@ app.get("/basket", (req, res) => {
 app.post("/addSkin", (req, res) => {
   const { quantity, userId, productId } = req.body;
   connection.query(
-    `INSERT INTO Basket (skin_name, quantity, userId, productId, skin_value, stock)
-      SELECT skin_name, ?, ?, ?, skin_value, stock
-      FROM skins
-      WHERE id = ?`,
-    [quantity, userId, productId, productId],
-    (err, resultBask) => {
+    `SELECT * FROM Basket WHERE userId = ? && productId = ?`,
+    [userId, productId],
+    (err, result) => {
       if (err) {
-        res.status(400).send("Error adding skin to basket");
-        return;
+        res.status(400).send("Error getting from Basket");
       }
-      res.status(201).send("successfully added skin to basket");
+      if(result === undefined || result.length == 0){
+        connection.query(
+          `INSERT INTO Basket (skin_name, quantity, userId, productId, skin_value, stock)
+            SELECT skin_name, ?, ?, ?, skin_value, stock
+            FROM skins
+            WHERE id = ?`,
+          [quantity, userId, productId, productId],
+          (err, resultBask) => {
+            if (err) {
+              res.status(400).send("Error adding skin to basket");
+              return;
+            }
+            res.status(201).send("successfully added skin to basket");
+            return;
+          }
+        );
+      }else{
+        console.log(result)
+        console.log(typeof(quantity));
+        console.log(typeof(result[0].quantity));
+        let quant = parseInt(quantity)+result[0].quantity;
+        console.log(quant);
+        connection.query(
+        'UPDATE Basket SET quantity = ? WHERE userId = ? && productId = ?',
+        [quant, userId, productId],
+        (err, resultBask) => {
+          if (err) {
+            res.status(400).send("Error updating basket");
+            return;
+          }
+          res.status(201).send("successfully added skin to basket");
+          return;
+        }
+      );
+      }
+      
     }
   );
+  
 });
 
 app.post("/deleteCart", (req, res) => {

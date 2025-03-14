@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
 import BackHeader from "./subElements/BackHeader";
 function getSession(callback) {
@@ -20,14 +21,19 @@ function getSession(callback) {
     .get(hostname, { params: { sessionID } })
     .then((response) => {
       callback(response.data[0]); // Pass session data to callback
+
     })
     .catch((error) => {
       console.error("Could not get session data", error);
       callback(null); // Pass null on error
     });
+
+    
 }
 
 function AdminPanel() {
+  const navigate = useNavigate();
+
   const [data, setData] = useState([]);
   const [sessionData, setSessionData] = useState(null); // Store session info
 
@@ -35,9 +41,23 @@ function AdminPanel() {
       getSession((session) => {
         setSessionData(session); // Set session data
         console.log("Session from API:", session); // Log session directly
+        let hostname = `http://${window.location.hostname}:3000/getAdmin?id=${session.userId}`;
+  
+  axios
+    .get(hostname)
+    .then((response) => {
+      if(response.data[0].adminRole == 0){
+        console.log("works");
+        navigate("/Account");
+      }
+    })
+    .catch((error) => {
+      console.error("Could not get session data", error);
+      callback(null); // Pass null on error
+    });
       });
     }, []);
-
+    
 
   const fetchOrders = () => {
     let hostname = "http://" + window.location.hostname + ":3000/getOrders";
@@ -56,6 +76,9 @@ function AdminPanel() {
   useEffect(() => {
     fetchOrders();
     }, []); 
+
+  
+    
 
   return (
     <div className="page">

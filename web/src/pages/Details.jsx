@@ -90,7 +90,6 @@ function Details() {
     <>
       <BackHeader />
       <div>
-        <h2>{skin.skin_name}</h2>
         <img src={"/public/" + skin.image_location} alt={skin.skin_name} />
         <p>Price: {skin.skin_value} Cash-Coins</p>
         <input
@@ -168,28 +167,34 @@ function addBasket(skin, sessionData, quantity) {
 }
 
 function makeReview(skin, sessionData, review, grade) {
-  var userId = sessionData.userId;
-  var productId = skin.id;
-  var productName = skin.skin_name;
-
-  let hostname = "http://" + window.location.hostname + ":3000/makeReview";
-
-  axios
-    .post(hostname, {
-      review,
-      grade,
-      userId,
-      productId,
-      productName,
-    })
-    .then((response) => {
-      console.log("Data sent successfully:", response.data);
-      window.location.reload();
-    })
-    .catch((error) => {
-      alert(error.response.data);
-      return;
-    });
+  console.log(grade);
+  if(grade > 0 && grade <= 5){
+    var userId = sessionData.userId;
+    var productId = skin.id;
+    var productName = skin.skin_name;
+  
+    let hostname = "http://" + window.location.hostname + ":3000/makeReview";
+  
+    axios
+      .post(hostname, {
+        review,
+        grade,
+        userId,
+        productId,
+        productName,
+      })
+      .then((response) => {
+        console.log("Data sent successfully:", response.data);
+        window.location.reload();
+      })
+      .catch((error) => {
+        alert(error.response.data);
+        return;
+      });
+  }else{
+    alert("The grade needs to be between 1-5");
+  }
+ 
 }
 
 export default Details;
