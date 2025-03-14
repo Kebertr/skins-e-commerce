@@ -17,8 +17,11 @@ const HomeHeader = () => {
 
   const handleLogOutClick = (event) => {
     console.log("--> Log Out")
-    deleteCookie(); 
-    window.location.reload();
+    deleteCookie();
+    setTimeout(() => {
+      //Navigate to home page
+      window.location.reload();
+    }, 200); // 0,2 seconds
   }
 
   const deleteCookie = () => {

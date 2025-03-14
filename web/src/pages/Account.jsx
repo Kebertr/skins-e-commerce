@@ -86,8 +86,6 @@ function Account() {
       .catch((error) => {
         console.error("Error sending data:", error);
       });
-    
-    window.location.reload();
   };
 
   return (
@@ -140,6 +138,7 @@ function Account() {
     </>
   );
 }
+
 function Admin(navigate, sessionData){
   var userId = sessionData.userId;
   let hostname = `http://${window.location.hostname}:3000/getAdmin?id=${userId}`;
