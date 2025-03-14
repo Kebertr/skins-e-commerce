@@ -253,12 +253,12 @@ app.get("/sessionId", (req, res) => {
 
 //Add cash
 app.post("/cash", (req, res) => {
-  const { username, user_password } = req.body;
-  console.log(req.body);
+  const { cash, username } = req.body;
+  console.log("cash body:", req.body);
   connection.query(
     //add cash to account
     "UPDATE users SET cash = ? WHERE username = ?",
-    [req.body.cash, req.body.username],
+    [cash, username],
     (error, results) => {
       if (error) {
         res.status(400).send("Problem setting cash");
@@ -276,6 +276,7 @@ app.post("/cash", (req, res) => {
         res.status(400).send("Problem setting cash");
         return;
       }
+      res.status(200).send("cash uppdated");
     }
   );
 });
