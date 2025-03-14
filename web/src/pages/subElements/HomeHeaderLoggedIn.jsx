@@ -27,11 +27,10 @@ const HomeHeader = () => {
     .find(row => row.startsWith("sessionId="))
     ?.split("=")[1]);
 
-    console.log(sessionID);
     //delete cookie from database
     let hostname = "http://" + window.location.hostname + ":3000/deleteSession";
     axios
-          .post(hostname, {sessionID})
+          .post(hostname, {sessionID}, { timeout: 10000 })
           .then((response) => {
 
             //Delete cookie from browser
@@ -43,7 +42,7 @@ const HomeHeader = () => {
             console.log("session deleted?");
           })
           .catch((error) => {
-            console.error("could not get session id");
+            console.error("could not get session id:", sessionID);
           });
   };
 
