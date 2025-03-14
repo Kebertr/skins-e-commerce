@@ -18,8 +18,10 @@ function getSession(callback) {
     return;
   }
 
+  let hostname = "http://" + window.location.hostname + ":3000/session";
+
   axios
-    .get("http://localhost:3000/session", { params: { sessionID } })
+    .get(hostname, { params: { sessionID } })
     .then((response) => {
       callback(response.data[0]); // Pass session data to callback
     })
@@ -49,8 +51,8 @@ function Checkout() {
 
   const fetchBasket = () => {
     var userId = sessionData.userId;
-    var url = `http://localhost:3000/basket?id=${userId}`
-    axios.get(url)
+    let hostname = `http://${window.location.hostname}:3000/basket?id=${userId}`;
+    axios.get(hostname)
       .then((response) => {
         setData(response.data);
       })
@@ -84,11 +86,12 @@ function Checkout() {
     </div>
   );
 }
+
 function pay(totalValue, data, sessionData, navigate){
   console.log(data);
   var check = false;
   data.forEach(prop => {
-    if(sessionData?.cash > totalValue && prop.quantity < prop.stock){
+    if(sessionData?.cash >= totalValue && prop.quantity <= prop.stock){
       console.log("Yay");
     }else{
       alert("Not enough money or not enough in stock");
@@ -104,8 +107,10 @@ function pay(totalValue, data, sessionData, navigate){
   var username = sessionData.username;
   var cash = sessionData.cash-totalValue;
   
+  let hostname = "http://" + window.location.hostname + ":3000/checkout";
+
   axios
-      .post("http://localhost:3000/checkout", {userId, cash, username, data})
+      .post(hostname, {userId, cash, username, data})
       
       .then((response) => {
         console.log("Data sent successfully:", response.data);

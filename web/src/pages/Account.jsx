@@ -17,8 +17,10 @@ function getSession(callback) {
     return;
   }
 
+  let hostname = "http://" + window.location.hostname + ":3000/session";
+
   axios
-    .get("http://localhost:3000/session", { params: { sessionID } })
+    .get(hostname, { params: { sessionID } })
     .then((response) => {
       callback(response.data[0]); // Pass session data to callback
     })
@@ -49,9 +51,9 @@ function Account() {
 
   const fetchOrders = () => {
     var userId = sessionData.userId;
-    var url = `http://localhost:3000/getOrders?userId=${userId}`
-    
-    axios.get(url)
+    let hostname = `http://${window.location.hostname}:3000/getOrders?userId=${userId}`;
+
+    axios.get(hostname)
       .then((response) => {
         console.log(response.data);
         setData(response.data);
@@ -73,8 +75,9 @@ function Account() {
   var cash = (sessionData?.cash ?? 0) + parseInt(formData.u || 0);
 
   const handleCashChange = (event) => {
+    let hostname = "http://" + window.location.hostname + ":3000/cash";
     axios
-      .post("http://localhost:3000/cash", { cash, username })
+      .post(hostname, { cash, username })
       .then((response) => {
         console.log("Data sent successfully:", response.data);
         setSessionData((prev) => ({ ...prev, cash }));
@@ -138,8 +141,10 @@ function Account() {
 }
 function Admin(navigate, sessionData){
   var userId = sessionData.userId;
+  let hostname = `http://${window.location.hostname}:3000/getAdmin?id=${userId}`;
+  
   axios
-    .get(`http://localhost:3000/getAdmin?id=${userId}`)
+    .get(hostname)
     .then((response) => {
       if(response.data[0].adminRole == 1){
         navigate("/adminPage");

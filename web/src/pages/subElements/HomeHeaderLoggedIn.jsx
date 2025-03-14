@@ -29,8 +29,9 @@ const HomeHeader = () => {
 
     console.log(sessionID);
     //delete cookie from database
+    let hostname = "http://" + window.location.hostname + ":3000/deleteSession";
     axios
-          .post("http://localhost:3000/deleteSession", {sessionID})
+          .post(hostname, {sessionID})
           .then((response) => {
 
             //Delete cookie from browser

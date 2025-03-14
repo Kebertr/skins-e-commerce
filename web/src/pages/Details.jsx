@@ -15,8 +15,10 @@ function getSession(callback) {
     return;
   }
 
+  let hostname = "http://" + window.location.hostname + ":3000/session";
+
   axios
-    .get("http://localhost:3000/session", { params: { sessionID } })
+    .get(hostname, { params: { sessionID } })
     .then((response) => {
       callback(response.data[0]); // Pass session data to callback
     })
@@ -46,8 +48,10 @@ function Details() {
   }, [sessionData]);
 
   const fetchSkin = async () => {
+    let hostname = `http://${window.location.hostname}:3000/skins/${id}`;
+
     try {
-      const response = await axios.get(`http://localhost:3000/skins/${id}`);
+      const response = await axios.get(hostname);
       setSkin(response.data);
     } catch (error) {
       console.log("Oops that should not happen");
@@ -65,8 +69,9 @@ function Details() {
       console.log("Fetching reviews for skin:", skin);
 
       try {
+        let hostname = `http://${window.location.hostname}:3000/reviewProduct?productId=${skin.id}`;
         const response = await axios.get(
-          `http://localhost:3000/reviewProduct?productId=${skin.id}`
+          hostname
         );
         setReviews(response.data);
       } catch (error) {
@@ -150,8 +155,11 @@ function Details() {
 function addBasket(skin, sessionData, quantity) {
   var productId = skin.id;
   var userId = sessionData.userId;
+
+  let hostname = "http://" + window.location.hostname + ":3000/addSkin";
+
   axios
-    .post("http://localhost:3000/addSkin", { quantity, userId, productId })
+    .post(hostname, { quantity, userId, productId })
 
     .then((response) => {
       console.log("Data sent successfully:", response.data);
@@ -163,8 +171,11 @@ function makeReview(skin, sessionData, review, grade) {
   var userId = sessionData.userId;
   var productId = skin.id;
   var productName = skin.skin_name;
+
+  let hostname = "http://" + window.location.hostname + ":3000/makeReview";
+
   axios
-    .post("http://localhost:3000/makeReview", {
+    .post(hostname, {
       review,
       grade,
       userId,

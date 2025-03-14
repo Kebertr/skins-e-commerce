@@ -10,7 +10,7 @@ const MySQLStore = require("express-mysql-session")(session);
 const cors = require("cors");
 
 //Allowing http request from cross
-app.use(cors("http://localhost"));
+app.use(cors());
 
 //Makes a connection with mysql database
 let connection;

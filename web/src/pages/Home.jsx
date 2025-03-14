@@ -18,8 +18,10 @@ function getSession(callback) {
     return;
   }
 
+  let hostname = "http://" + window.location.hostname + ":3000/session";
+
   axios
-    .get("http://localhost:3000/session", { params: { sessionID } })
+    .get(hostname, { params: { sessionID } })
     .then((response) => {
       callback(response.data[0]); // Pass session data to callback
     })
@@ -46,8 +48,11 @@ function Home() {
   }, []);
 
   const fetchSkins = () => {
+
+    let hostname = "http://" + window.location.hostname + ":3000/skins";
+
     axios
-      .get("http://localhost:3000/skins")
+      .get(hostname)
       .then((response) => {
         setData(response.data); // Set all skins
         setFilteredData(response.data); // Initialize filteredData with all skins
