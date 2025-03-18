@@ -20,7 +20,7 @@ const HomeHeader = () => {
         <h2 className="h2">King-skins</h2>
         <div className="buttons">
           <button className="header-button" onClick={handleRegisterClick}>Register</button>
-          <button className="header-button" onClick={handleLoggInClick}>Logg In</button>
+          <button className="header-button" onClick={handleLoggInClick}>Log In</button>
         </div>
       </header>
     </>
