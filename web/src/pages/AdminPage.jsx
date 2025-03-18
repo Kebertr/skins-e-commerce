@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Home.css";
 import BackHeader from "./subElements/BackHeader";
+
 function getSession(callback) {
   var sessionID = document.cookie
     .split("; ")
