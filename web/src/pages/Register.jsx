@@ -29,7 +29,7 @@ function Register() {
   //handels submit form and returns message if username and password does not work
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (formData.p1 == formData.p2 && formData.u != "") {
+    if (formData.p1 == formData.p2 && formData.u != "" && (formData.admin == 1 || formData.admin == 0)) {
       const newUser = {
         username: formData.u,
         user_password: formData.p1,
@@ -51,8 +51,13 @@ function Register() {
           setPasswordText("🚨 Username already exist");
         });
     } else {
-      //Fields being empty is handeled automaticaly in form
-      setPasswordText("🚨 Are u blind? Passwords must match! 🚨");
+      if((formData.admin != 1 || formData.admin != 0)){
+        setPasswordText("Admin should be 1 or 0");
+      }else{
+        //Fields being empty is handeled automaticaly in form
+        setPasswordText("🚨 Are u blind? Passwords must match! 🚨");
+      }
+      
     }
   };
 
